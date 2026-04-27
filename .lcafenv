@@ -3,6 +3,12 @@
 # take precedence over what is defined in Makefile when they are set. This
 # allows overriding certain settings without modifying the Makefile.
 
+# golangci-lint times out at 5m on CI runners because the test module's
+# transitive dependency graph (lcaf-component-terratest pulls in k8s.io,
+# Azure SDK, the AWS SDK service catalog, etc.) takes ~4m to load before
+# linting starts. Bump the budget so loading + linting fits comfortably.
+GO_LINT_TIMEOUT=10m
+
 # REPO_MANIFESTS_URL="https://github.com/launchbynttdata/launch-common-automation-framework.git"
 # REPO_BRANCH="main"
 # REPO_MANIFEST="manifests/terraform_modules/seed/manifest.xml"
