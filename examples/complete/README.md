@@ -24,7 +24,7 @@ module "resource_names" {
 
   logical_product_family  = var.logical_product_family
   logical_product_service = var.logical_product_service
-  region                  = join("", split("-", data.aws_region.current.name))
+  region                  = join("", split("-", data.aws_region.current.region))
   class_env               = var.class_env
   cloud_resource_type     = each.value.name
   instance_env            = var.instance_env
@@ -78,6 +78,7 @@ module "attachment" {
   port              = var.target_port
   availability_zone = var.availability_zone
   quic_server_id    = var.quic_server_id
+  region            = var.attachment_region
 }
 ```
 
@@ -98,7 +99,7 @@ Sensible defaults are encoded in `test.tfvars`. Override any of them by passing 
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | ~> 1.10 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 5.71, < 7.0 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 6.0, < 7.0 |
 
 ## Providers
 
@@ -140,6 +141,7 @@ Sensible defaults are encoded in `test.tfvars`. Override any of them by passing 
 | <a name="input_target_port"></a> [target\_port](#input\_target\_port) | Port on which the target receives traffic and on which the target group listens. | `number` | `80` | no |
 | <a name="input_availability_zone"></a> [availability\_zone](#input\_availability\_zone) | Availability Zone in which to register the target. Set to `all` for cross-zone IP registration. Use `null` to let AWS infer the AZ from `target_ip`. | `string` | `null` | no |
 | <a name="input_quic_server_id"></a> [quic\_server\_id](#input\_quic\_server\_id) | QUIC server ID for the target. Must be `null` unless the target group's protocol is `QUIC` or `TCP_QUIC`. The example creates an HTTP target group, so the default is `null`. | `string` | `null` | no |
+| <a name="input_attachment_region"></a> [attachment\_region](#input\_attachment\_region) | Optional AWS region override forwarded to the attachment module. Leave `null` to inherit the region from the AWS provider configuration. | `string` | `null` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | Map of tags applied to created resources. | `map(string)` | `{}` | no |
 
 ## Outputs
@@ -152,6 +154,7 @@ Sensible defaults are encoded in `test.tfvars`. Override any of them by passing 
 | <a name="output_port"></a> [port](#output\_port) | Port on which the registered target receives traffic. |
 | <a name="output_availability_zone"></a> [availability\_zone](#output\_availability\_zone) | Availability Zone in which the target is registered. |
 | <a name="output_quic_server_id"></a> [quic\_server\_id](#output\_quic\_server\_id) | QUIC server ID assigned to the target, if applicable. |
+| <a name="output_region"></a> [region](#output\_region) | AWS region the attachment is managed in (matches the provider region when `var.attachment_region` is null). |
 | <a name="output_vpc_id"></a> [vpc\_id](#output\_vpc\_id) | Identifier of the VPC created by the example. |
 | <a name="output_subnet_id"></a> [subnet\_id](#output\_subnet\_id) | Identifier of the subnet created by the example. |
 <!-- END_TF_DOCS -->

@@ -40,6 +40,11 @@ output "quic_server_id" {
   value       = module.attachment.quic_server_id
 }
 
+output "region" {
+  description = "AWS region the attachment is managed in (matches the provider region when `var.attachment_region` is null)."
+  value       = module.attachment.region
+}
+
 output "vpc_id" {
   description = "Identifier of the VPC created by the example."
   value       = aws_vpc.vpc.id

@@ -98,6 +98,12 @@ variable "quic_server_id" {
   default     = null
 }
 
+variable "attachment_region" {
+  description = "Optional AWS region override forwarded to the attachment module. Leave `null` to inherit the region from the AWS provider configuration."
+  type        = string
+  default     = null
+}
+
 variable "tags" {
   description = "Map of tags applied to created resources."
   type        = map(string)

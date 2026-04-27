@@ -43,6 +43,12 @@ variable "availability_zone" {
   default     = null
 }
 
+variable "region" {
+  description = "AWS region in which to manage the target group attachment. Set to `null` to inherit the region from the AWS provider configuration. Use this only when the calling stack manages multiple regions and you need to override the provider default per-attachment."
+  type        = string
+  default     = null
+}
+
 variable "quic_server_id" {
   description = "Server ID for the target. Must be the literal `0x` prefix followed by exactly 16 hexadecimal characters and unique at the listener level. Required when the target group's protocol is `QUIC` or `TCP_QUIC`; must be omitted for any other protocol. Modifying this value forces replacement of the attachment."
   type        = string

@@ -16,4 +16,5 @@ resource "aws_lb_target_group_attachment" "attachment" {
   port              = var.port
   availability_zone = var.availability_zone
   quic_server_id    = var.quic_server_id
+  region            = var.region
 }

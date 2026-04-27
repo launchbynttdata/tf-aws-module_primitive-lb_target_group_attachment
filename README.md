@@ -9,6 +9,8 @@ Primitive Terraform module that wraps the [`aws_lb_target_group_attachment`](htt
 
 The module exposes every documented argument of the underlying resource and produces no opinionated defaults beyond Terraform's, so callers retain full control over registration semantics.
 
+> ⚠️ **AWS provider v6 only.** This module requires the AWS provider in the range `>= 6.0, < 7.0`. That is **a departure from most other launchbynttdata primitive modules**, which still permit AWS provider v5. The v6 floor is required because this module exposes the per-resource `region` argument, which is part of the v6-only "enhanced region support" feature. If your calling stack pins AWS provider v5, you will need to upgrade to v6 before consuming this module. See the [Provider compatibility](#provider-compatibility) section below for details.
+
 ## Usage
 
 ```hcl
@@ -20,6 +22,7 @@ module "attachment" {
   port              = 80
   availability_zone = null
   quic_server_id    = null
+  region            = null
 }
 ```
 
@@ -38,7 +41,7 @@ The value passed to `target_id` must match the target group's `target_type`:
 
 ## Provider compatibility
 
-Compatible with the AWS provider in the range `>= 5.71, < 7.0`. The 5.71 floor is required because `quic_server_id` was introduced in that release. The example uses `data.aws_region.current.name`, which produces a deprecation warning on AWS provider 6.x; the warning is informational and does not affect behaviour. The deprecated attribute will be removed in AWS provider 7.0.
+Compatible with the AWS provider in the range `>= 6.0, < 7.0`. The 6.0 floor is required because the per-resource `region` argument is exposed by this module so callers can manage attachments outside the provider's default region without configuring an aliased provider; per-resource region overrides ("enhanced region support") are an AWS provider v6 feature.
 
 ## Pre-Commit hooks
 
@@ -76,7 +79,7 @@ pre-commit install --hook-type commit-msg
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | ~> 1.10 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 5.71, < 7.0 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 6.0, < 7.0 |
 
 ## Providers
 
@@ -102,6 +105,7 @@ No modules.
 | <a name="input_target_id"></a> [target\_id](#input\_target\_id) | Identifier of the target to register. The expected value depends on the target group's `target_type`:<br/>  - `instance` : EC2 instance ID.<br/>  - `ip`       : IP address (must fall within the VPC CIDR, RFC 1918 ranges, or 100.64.0.0/10).<br/>  - `lambda`   : Lambda function ARN.<br/>  - `alb`      : Application Load Balancer ARN. | `string` | n/a | yes |
 | <a name="input_port"></a> [port](#input\_port) | Port on which the target receives traffic. Required when the target group's `target_type` is `instance`, `ip`, or `alb`. Must be omitted when `target_type` is `lambda`. | `number` | `null` | no |
 | <a name="input_availability_zone"></a> [availability\_zone](#input\_availability\_zone) | Availability Zone in which to register the target. Set to `all` to register an IP target outside the VPC subnet (cross-zone). Only valid when the target group's `target_type` is `ip`. | `string` | `null` | no |
+| <a name="input_region"></a> [region](#input\_region) | AWS region in which to manage the target group attachment. Set to `null` to inherit the region from the AWS provider configuration. Use this only when the calling stack manages multiple regions and you need to override the provider default per-attachment. | `string` | `null` | no |
 | <a name="input_quic_server_id"></a> [quic\_server\_id](#input\_quic\_server\_id) | Server ID for the target. Must be the literal `0x` prefix followed by exactly 16 hexadecimal characters and unique at the listener level. Required when the target group's protocol is `QUIC` or `TCP_QUIC`; must be omitted for any other protocol. Modifying this value forces replacement of the attachment. | `string` | `null` | no |
 
 ## Outputs
@@ -114,4 +118,5 @@ No modules.
 | <a name="output_port"></a> [port](#output\_port) | Port on which the registered target receives traffic, or null when not applicable (e.g. `lambda` targets). |
 | <a name="output_availability_zone"></a> [availability\_zone](#output\_availability\_zone) | Availability Zone in which the target is registered, or null when not applicable. |
 | <a name="output_quic_server_id"></a> [quic\_server\_id](#output\_quic\_server\_id) | QUIC server ID assigned to the target, or null when the target group does not use QUIC/TCP\_QUIC. |
+| <a name="output_region"></a> [region](#output\_region) | AWS region the attachment is managed in (computed from the provider configuration when `var.region` is null). |
 <!-- END_TF_DOCS -->

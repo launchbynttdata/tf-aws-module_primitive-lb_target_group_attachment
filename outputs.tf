@@ -39,3 +39,8 @@ output "quic_server_id" {
   description = "QUIC server ID assigned to the target, or null when the target group does not use QUIC/TCP_QUIC."
   value       = aws_lb_target_group_attachment.attachment.quic_server_id
 }
+
+output "region" {
+  description = "AWS region the attachment is managed in (computed from the provider configuration when `var.region` is null)."
+  value       = aws_lb_target_group_attachment.attachment.region
+}

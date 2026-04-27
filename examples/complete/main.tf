@@ -24,7 +24,7 @@ module "resource_names" {
 
   logical_product_family  = var.logical_product_family
   logical_product_service = var.logical_product_service
-  region                  = join("", split("-", data.aws_region.current.name))
+  region                  = join("", split("-", data.aws_region.current.region))
   class_env               = var.class_env
   cloud_resource_type     = each.value.name
   instance_env            = var.instance_env
@@ -80,4 +80,5 @@ module "attachment" {
   port              = var.target_port
   availability_zone = var.availability_zone
   quic_server_id    = var.quic_server_id
+  region            = var.attachment_region
 }

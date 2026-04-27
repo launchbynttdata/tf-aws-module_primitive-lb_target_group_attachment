@@ -33,16 +33,22 @@ const (
 	additionalTargetIP = "10.0.1.200"
 )
 
+// expectedRegion returns the region the example is expected to deploy into.
+// It mirrors the AWS provider's region-resolution order (AWS_DEFAULT_REGION,
+// AWS_REGION, then the hard-coded value in examples/complete/provider.tf).
+func expectedRegion() string {
+	if r := os.Getenv("AWS_DEFAULT_REGION"); r != "" {
+		return r
+	}
+	if r := os.Getenv("AWS_REGION"); r != "" {
+		return r
+	}
+	return "us-east-2"
+}
+
 func newELBv2Client(t *testing.T) *elbv2.Client {
 	t.Helper()
-	region := os.Getenv("AWS_DEFAULT_REGION")
-	if region == "" {
-		region = os.Getenv("AWS_REGION")
-	}
-	if region == "" {
-		region = "us-east-2"
-	}
-	cfg, err := config.LoadDefaultConfig(context.Background(), config.WithRegion(region))
+	cfg, err := config.LoadDefaultConfig(context.Background(), config.WithRegion(expectedRegion()))
 	require.NoError(t, err, "must be able to load AWS SDK config")
 	return elbv2.NewFromConfig(cfg)
 }
@@ -86,6 +92,8 @@ func TestComposableComplete(t *testing.T, ctx lcaftypes.TestContext) {
 			"target_id output must match the IP set in test.tfvars")
 		assert.Equal(t, "80", terraform.Output(t, opts, "port"),
 			"port output must match the port set in test.tfvars")
+		assert.Equal(t, expectedRegion(), terraform.Output(t, opts, "region"),
+			"region output must equal the provider region (computed when var.attachment_region is null)")
 	})
 
 	client := newELBv2Client(t)
@@ -134,6 +142,8 @@ func TestComposableCompleteReadonly(t *testing.T, ctx lcaftypes.TestContext) {
 			"target_id output must match the IP set in test.tfvars")
 		assert.Equal(t, "80", terraform.Output(t, opts, "port"),
 			"port output must match the port set in test.tfvars")
+		assert.Equal(t, expectedRegion(), terraform.Output(t, opts, "region"),
+			"region output must equal the provider region (computed when var.attachment_region is null)")
 	})
 
 	t.Run("PrimaryTargetIsRegistered", func(t *testing.T) {
