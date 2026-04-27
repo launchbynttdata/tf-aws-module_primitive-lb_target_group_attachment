@@ -42,6 +42,16 @@ resource "aws_vpc" "vpc" {
   })
 }
 
+# Take ownership of the VPC's default security group and strip every rule so it
+# denies all ingress and egress, satisfying Regula FG_R00089.
+resource "aws_default_security_group" "default" {
+  vpc_id = aws_vpc.vpc.id
+
+  tags = merge(var.tags, {
+    Name = "${module.resource_names["vpc"].standard}-default"
+  })
+}
+
 resource "aws_subnet" "subnet" {
   vpc_id            = aws_vpc.vpc.id
   cidr_block        = var.subnet_cidr

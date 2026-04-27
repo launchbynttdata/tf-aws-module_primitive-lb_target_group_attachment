@@ -42,6 +42,14 @@ resource "aws_vpc" "vpc" {
   })
 }
 
+resource "aws_default_security_group" "default" {
+  vpc_id = aws_vpc.vpc.id
+
+  tags = merge(var.tags, {
+    Name = "${module.resource_names["vpc"].standard}-default"
+  })
+}
+
 resource "aws_subnet" "subnet" {
   vpc_id            = aws_vpc.vpc.id
   cidr_block        = var.subnet_cidr
@@ -109,6 +117,7 @@ Sensible defaults are encoded in `test.tfvars`. Override any of them by passing 
 
 | Name | Type |
 |------|------|
+| [aws_default_security_group.default](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/default_security_group) | resource |
 | [aws_lb_target_group.tg](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lb_target_group) | resource |
 | [aws_subnet.subnet](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/subnet) | resource |
 | [aws_vpc.vpc](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc) | resource |
