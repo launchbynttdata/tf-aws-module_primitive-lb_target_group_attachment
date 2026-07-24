@@ -101,18 +101,12 @@ Sensible defaults are encoded in `test.tfvars`. Override any of them by passing 
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | ~> 1.10 |
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 6.0, < 7.0 |
 
-## Providers
-
-| Name | Version |
-|------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | 6.42.0 |
-
 ## Modules
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_resource_names"></a> [resource\_names](#module\_resource\_names) | terraform.registry.launch.nttdata.com/module_library/resource_name/launch | ~> 2.0 |
 | <a name="module_attachment"></a> [attachment](#module\_attachment) | ../.. | n/a |
+| <a name="module_resource_names"></a> [resource\_names](#module\_resource\_names) | terraform.registry.launch.nttdata.com/module_library/resource_name/launch | ~> 2.0 |
 
 ## Resources
 
@@ -129,32 +123,32 @@ Sensible defaults are encoded in `test.tfvars`. Override any of them by passing 
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_logical_product_family"></a> [logical\_product\_family](#input\_logical\_product\_family) | Logical product family the resources belong to. | `string` | `"launch"` | no |
-| <a name="input_logical_product_service"></a> [logical\_product\_service](#input\_logical\_product\_service) | Logical product service the resources belong to. | `string` | `"lbatt"` | no |
+| <a name="input_attachment_region"></a> [attachment\_region](#input\_attachment\_region) | Optional AWS region override forwarded to the attachment module. Leave `null` to inherit the region from the AWS provider configuration. | `string` | `null` | no |
+| <a name="input_availability_zone"></a> [availability\_zone](#input\_availability\_zone) | Availability Zone in which to register the target. Set to `all` for cross-zone IP registration. Use `null` to let AWS infer the AZ from `target_ip`. | `string` | `null` | no |
 | <a name="input_class_env"></a> [class\_env](#input\_class\_env) | Environment class (e.g. dev, qa, prod). | `string` | `"dev"` | no |
 | <a name="input_instance_env"></a> [instance\_env](#input\_instance\_env) | Numeric instance environment identifier (0-999). | `number` | `0` | no |
 | <a name="input_instance_resource"></a> [instance\_resource](#input\_instance\_resource) | Numeric instance resource identifier (0-100). | `number` | `0` | no |
+| <a name="input_logical_product_family"></a> [logical\_product\_family](#input\_logical\_product\_family) | Logical product family the resources belong to. | `string` | `"launch"` | no |
+| <a name="input_logical_product_service"></a> [logical\_product\_service](#input\_logical\_product\_service) | Logical product service the resources belong to. | `string` | `"lbatt"` | no |
+| <a name="input_quic_server_id"></a> [quic\_server\_id](#input\_quic\_server\_id) | QUIC server ID for the target. Must be `null` unless the target group's protocol is `QUIC` or `TCP_QUIC`. The example creates an HTTP target group, so the default is `null`. | `string` | `null` | no |
 | <a name="input_resource_names_map"></a> [resource\_names\_map](#input\_resource\_names\_map) | Map of resource name suffixes and length budgets used by the resource\_name module. | <pre>map(object({<br/>    name       = string<br/>    max_length = optional(number, 60)<br/>  }))</pre> | <pre>{<br/>  "subnet": {<br/>    "max_length": 60,<br/>    "name": "sub"<br/>  },<br/>  "target_group": {<br/>    "max_length": 32,<br/>    "name": "tg"<br/>  },<br/>  "vpc": {<br/>    "max_length": 60,<br/>    "name": "vpc"<br/>  }<br/>}</pre> | no |
-| <a name="input_vpc_cidr"></a> [vpc\_cidr](#input\_vpc\_cidr) | CIDR block for the VPC. | `string` | `"10.0.0.0/16"` | no |
 | <a name="input_subnet_cidr"></a> [subnet\_cidr](#input\_subnet\_cidr) | CIDR block for the subnet that hosts the registered target. | `string` | `"10.0.1.0/24"` | no |
+| <a name="input_tags"></a> [tags](#input\_tags) | Map of tags applied to created resources. | `map(string)` | `{}` | no |
 | <a name="input_target_ip"></a> [target\_ip](#input\_target\_ip) | IP address to register with the target group. Must lie within `subnet_cidr`. | `string` | `"10.0.1.100"` | no |
 | <a name="input_target_port"></a> [target\_port](#input\_target\_port) | Port on which the target receives traffic and on which the target group listens. | `number` | `80` | no |
-| <a name="input_availability_zone"></a> [availability\_zone](#input\_availability\_zone) | Availability Zone in which to register the target. Set to `all` for cross-zone IP registration. Use `null` to let AWS infer the AZ from `target_ip`. | `string` | `null` | no |
-| <a name="input_quic_server_id"></a> [quic\_server\_id](#input\_quic\_server\_id) | QUIC server ID for the target. Must be `null` unless the target group's protocol is `QUIC` or `TCP_QUIC`. The example creates an HTTP target group, so the default is `null`. | `string` | `null` | no |
-| <a name="input_attachment_region"></a> [attachment\_region](#input\_attachment\_region) | Optional AWS region override forwarded to the attachment module. Leave `null` to inherit the region from the AWS provider configuration. | `string` | `null` | no |
-| <a name="input_tags"></a> [tags](#input\_tags) | Map of tags applied to created resources. | `map(string)` | `{}` | no |
+| <a name="input_vpc_cidr"></a> [vpc\_cidr](#input\_vpc\_cidr) | CIDR block for the VPC. | `string` | `"10.0.0.0/16"` | no |
 
 ## Outputs
 
 | Name | Description |
 |------|-------------|
-| <a name="output_id"></a> [id](#output\_id) | Synthetic identifier of the target group attachment. |
-| <a name="output_target_group_arn"></a> [target\_group\_arn](#output\_target\_group\_arn) | ARN of the target group the attachment is registered with. |
-| <a name="output_target_id"></a> [target\_id](#output\_target\_id) | Identifier of the registered target. |
-| <a name="output_port"></a> [port](#output\_port) | Port on which the registered target receives traffic. |
 | <a name="output_availability_zone"></a> [availability\_zone](#output\_availability\_zone) | Availability Zone in which the target is registered. |
+| <a name="output_id"></a> [id](#output\_id) | Synthetic identifier of the target group attachment. |
+| <a name="output_port"></a> [port](#output\_port) | Port on which the registered target receives traffic. |
 | <a name="output_quic_server_id"></a> [quic\_server\_id](#output\_quic\_server\_id) | QUIC server ID assigned to the target, if applicable. |
 | <a name="output_region"></a> [region](#output\_region) | AWS region the attachment is managed in (matches the provider region when `var.attachment_region` is null). |
-| <a name="output_vpc_id"></a> [vpc\_id](#output\_vpc\_id) | Identifier of the VPC created by the example. |
 | <a name="output_subnet_id"></a> [subnet\_id](#output\_subnet\_id) | Identifier of the subnet created by the example. |
+| <a name="output_target_group_arn"></a> [target\_group\_arn](#output\_target\_group\_arn) | ARN of the target group the attachment is registered with. |
+| <a name="output_target_id"></a> [target\_id](#output\_target\_id) | Identifier of the registered target. |
+| <a name="output_vpc_id"></a> [vpc\_id](#output\_vpc\_id) | Identifier of the VPC created by the example. |
 <!-- END_TF_DOCS -->
