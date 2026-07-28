@@ -81,12 +81,6 @@ pre-commit install --hook-type commit-msg
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | ~> 1.10 |
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 6.0, < 7.0 |
 
-## Providers
-
-| Name | Version |
-|------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | 6.42.0 |
-
 ## Modules
 
 No modules.
@@ -101,22 +95,22 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| <a name="input_availability_zone"></a> [availability\_zone](#input\_availability\_zone) | Availability Zone in which to register the target. Set to `all` to register an IP target outside the VPC subnet (cross-zone). Only valid when the target group's `target_type` is `ip`. | `string` | `null` | no |
+| <a name="input_port"></a> [port](#input\_port) | Port on which the target receives traffic. Required when the target group's `target_type` is `instance`, `ip`, or `alb`. Must be omitted when `target_type` is `lambda`. | `number` | `null` | no |
+| <a name="input_quic_server_id"></a> [quic\_server\_id](#input\_quic\_server\_id) | Server ID for the target. Must be the literal `0x` prefix followed by exactly 16 hexadecimal characters and unique at the listener level. Required when the target group's protocol is `QUIC` or `TCP_QUIC`; must be omitted for any other protocol. Modifying this value forces replacement of the attachment. | `string` | `null` | no |
+| <a name="input_region"></a> [region](#input\_region) | AWS region in which to manage the target group attachment. Set to `null` to inherit the region from the AWS provider configuration. Use this only when the calling stack manages multiple regions and you need to override the provider default per-attachment. | `string` | `null` | no |
 | <a name="input_target_group_arn"></a> [target\_group\_arn](#input\_target\_group\_arn) | ARN of the target group with which to register the target. | `string` | n/a | yes |
 | <a name="input_target_id"></a> [target\_id](#input\_target\_id) | Identifier of the target to register. The expected value depends on the target group's `target_type`:<br/>  - `instance` : EC2 instance ID.<br/>  - `ip`       : IP address (must fall within the VPC CIDR, RFC 1918 ranges, or 100.64.0.0/10).<br/>  - `lambda`   : Lambda function ARN.<br/>  - `alb`      : Application Load Balancer ARN. | `string` | n/a | yes |
-| <a name="input_port"></a> [port](#input\_port) | Port on which the target receives traffic. Required when the target group's `target_type` is `instance`, `ip`, or `alb`. Must be omitted when `target_type` is `lambda`. | `number` | `null` | no |
-| <a name="input_availability_zone"></a> [availability\_zone](#input\_availability\_zone) | Availability Zone in which to register the target. Set to `all` to register an IP target outside the VPC subnet (cross-zone). Only valid when the target group's `target_type` is `ip`. | `string` | `null` | no |
-| <a name="input_region"></a> [region](#input\_region) | AWS region in which to manage the target group attachment. Set to `null` to inherit the region from the AWS provider configuration. Use this only when the calling stack manages multiple regions and you need to override the provider default per-attachment. | `string` | `null` | no |
-| <a name="input_quic_server_id"></a> [quic\_server\_id](#input\_quic\_server\_id) | Server ID for the target. Must be the literal `0x` prefix followed by exactly 16 hexadecimal characters and unique at the listener level. Required when the target group's protocol is `QUIC` or `TCP_QUIC`; must be omitted for any other protocol. Modifying this value forces replacement of the attachment. | `string` | `null` | no |
 
 ## Outputs
 
 | Name | Description |
 |------|-------------|
-| <a name="output_id"></a> [id](#output\_id) | Synthetic identifier of the target group attachment. |
-| <a name="output_target_group_arn"></a> [target\_group\_arn](#output\_target\_group\_arn) | ARN of the target group the attachment is registered with. |
-| <a name="output_target_id"></a> [target\_id](#output\_target\_id) | Identifier of the registered target. |
-| <a name="output_port"></a> [port](#output\_port) | Port on which the registered target receives traffic, or null when not applicable (e.g. `lambda` targets). |
 | <a name="output_availability_zone"></a> [availability\_zone](#output\_availability\_zone) | Availability Zone in which the target is registered, or null when not applicable. |
+| <a name="output_id"></a> [id](#output\_id) | Synthetic identifier of the target group attachment. |
+| <a name="output_port"></a> [port](#output\_port) | Port on which the registered target receives traffic, or null when not applicable (e.g. `lambda` targets). |
 | <a name="output_quic_server_id"></a> [quic\_server\_id](#output\_quic\_server\_id) | QUIC server ID assigned to the target, or null when the target group does not use QUIC/TCP\_QUIC. |
 | <a name="output_region"></a> [region](#output\_region) | AWS region the attachment is managed in (computed from the provider configuration when `var.region` is null). |
+| <a name="output_target_group_arn"></a> [target\_group\_arn](#output\_target\_group\_arn) | ARN of the target group the attachment is registered with. |
+| <a name="output_target_id"></a> [target\_id](#output\_target\_id) | Identifier of the registered target. |
 <!-- END_TF_DOCS -->
