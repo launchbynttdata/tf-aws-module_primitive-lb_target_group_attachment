@@ -83,16 +83,16 @@ func describeRegisteredTarget(t *testing.T, client *elbv2.Client, targetGroupArn
 // it appears in the target group, and deregistering it again.
 func TestComposableComplete(t *testing.T, ctx lcaftypes.TestContext) {
 	opts := ctx.TerratestTerraformOptions()
-	targetGroupArn := terraform.Output(t, opts, "target_group_arn")
+	targetGroupArn := terraform.OutputContext(t, context.Background(), opts, "target_group_arn")
 	require.NotEmpty(t, targetGroupArn, "target_group_arn output must not be empty")
-	require.NotEmpty(t, terraform.Output(t, opts, "id"), "id output must not be empty")
+	require.NotEmpty(t, terraform.OutputContext(t, context.Background(), opts, "id"), "id output must not be empty")
 
 	t.Run("ModuleOutputsMatchInputs", func(t *testing.T) {
-		assert.Equal(t, expectedTargetIP, terraform.Output(t, opts, "target_id"),
+		assert.Equal(t, expectedTargetIP, terraform.OutputContext(t, context.Background(), opts, "target_id"),
 			"target_id output must match the IP set in test.tfvars")
-		assert.Equal(t, "80", terraform.Output(t, opts, "port"),
+		assert.Equal(t, "80", terraform.OutputContext(t, context.Background(), opts, "port"),
 			"port output must match the port set in test.tfvars")
-		assert.Equal(t, expectedRegion(), terraform.Output(t, opts, "region"),
+		assert.Equal(t, expectedRegion(), terraform.OutputContext(t, context.Background(), opts, "region"),
 			"region output must equal the provider region (computed when var.attachment_region is null)")
 	})
 
@@ -133,16 +133,16 @@ func TestComposableComplete(t *testing.T, ctx lcaftypes.TestContext) {
 // otherwise mutate the target group state.
 func TestComposableCompleteReadonly(t *testing.T, ctx lcaftypes.TestContext) {
 	opts := ctx.TerratestTerraformOptions()
-	targetGroupArn := terraform.Output(t, opts, "target_group_arn")
+	targetGroupArn := terraform.OutputContext(t, context.Background(), opts, "target_group_arn")
 	require.NotEmpty(t, targetGroupArn, "target_group_arn output must not be empty")
-	require.NotEmpty(t, terraform.Output(t, opts, "id"), "id output must not be empty")
+	require.NotEmpty(t, terraform.OutputContext(t, context.Background(), opts, "id"), "id output must not be empty")
 
 	t.Run("ModuleOutputsMatchInputs", func(t *testing.T) {
-		assert.Equal(t, expectedTargetIP, terraform.Output(t, opts, "target_id"),
+		assert.Equal(t, expectedTargetIP, terraform.OutputContext(t, context.Background(), opts, "target_id"),
 			"target_id output must match the IP set in test.tfvars")
-		assert.Equal(t, "80", terraform.Output(t, opts, "port"),
+		assert.Equal(t, "80", terraform.OutputContext(t, context.Background(), opts, "port"),
 			"port output must match the port set in test.tfvars")
-		assert.Equal(t, expectedRegion(), terraform.Output(t, opts, "region"),
+		assert.Equal(t, expectedRegion(), terraform.OutputContext(t, context.Background(), opts, "region"),
 			"region output must equal the provider region (computed when var.attachment_region is null)")
 	})
 
